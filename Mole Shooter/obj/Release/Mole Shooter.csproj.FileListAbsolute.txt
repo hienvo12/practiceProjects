@@ -1,0 +1,9 @@
+C:\Users\Hien\source\repos\Mole Shooter\Mole Shooter\bin\Release\Mole Shooter.exe.config
+C:\Users\Hien\source\repos\Mole Shooter\Mole Shooter\bin\Release\Mole Shooter.exe
+C:\Users\Hien\source\repos\Mole Shooter\Mole Shooter\bin\Release\Mole Shooter.pdb
+C:\Users\Hien\source\repos\Mole Shooter\Mole Shooter\obj\Release\Mole_Shooter.MoleShooter.resources
+C:\Users\Hien\source\repos\Mole Shooter\Mole Shooter\obj\Release\Mole_Shooter.Properties.Resources.resources
+C:\Users\Hien\source\repos\Mole Shooter\Mole Shooter\obj\Release\Mole Shooter.csproj.GenerateResource.cache
+C:\Users\Hien\source\repos\Mole Shooter\Mole Shooter\obj\Release\Mole Shooter.csproj.CoreCompileInputs.cache
+C:\Users\Hien\source\repos\Mole Shooter\Mole Shooter\obj\Release\Mole Shooter.exe
+C:\Users\Hien\source\repos\Mole Shooter\Mole Shooter\obj\Release\Mole Shooter.pdb
