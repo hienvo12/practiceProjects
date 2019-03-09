@@ -1,0 +1,157 @@
+<html>
+
+<canvas id="gameCanvas" width="800" height="600"></canvas>
+
+<script>
+var ballX = 400, ballY = 300;
+var ballSpeedX = 5, ballSpeedY = 5;
+var bouncer = 350, bouncerY = 560;
+var BRICK_W = 80, BRICK_H = 20, BRICK_GAP = 2, BRICK_COLS = 10, BRICK_ROWS = 14;
+var brickGrid = new Array(BRICK_COLS * BRICK_ROWS);
+var brickCount = 0;
+
+function calculateMousePos(evt){
+	var rect = canvas.getBoundingClientRect();
+	var root = document.documentElement;
+	var mouseX = evt.clientX - rect.left - root.scrollLeft;
+	var mouseY = evt.clientY - rect.top - root.scrollTop;
+	return{ x:mouseX,y:mouseY };
+}
+function resetBricks() {
+	for(var i = 0; i < BRICK_COLS * BRICK_ROWS; i++){
+		if(Math.random() < 1){ brickGrid[i] = 1; brickCount++;}
+		else{ brickGrid[i] = 0; }
+	}
+}
+function isBrickAtTileCoord(brickTileCol, brickTileRow)	{
+		var brickIndex = brickTileCol + BRICK_COLS*brickTileRow;
+		return (brickGrid[brickIndex] == 1);
+}
+function brickTileToIndex(tileCol, tileRow){
+		return	(tileCol + BRICK_COLS*tileRow);
+}
+function removeBrickAtPixelCoord(pixelX,pixelY)	{
+	var tileCol = pixelX/BRICK_W;
+	var tileRow = pixelY/BRICK_H;
+	// we'll use Math.floor to round down to the nearest whole number
+	tileCol	= Math.floor(tileCol);
+	tileRow	= Math.floor(tileRow);
+	// first check whethe the ball is within any part of the brick wall				
+	if(tileCol < 1 || tileCol >= BRICK_COLS -1 || tileRow < 2 || tileRow >= BRICK_ROWS) {
+			return false;	//bail out of function to avoid	illegal	array position usage
+	} 
+	var brickIndex = brickTileToIndex(tileCol, tileRow);
+	if(brickGrid[brickIndex] == 1) {
+		var prevBallX = ballX - ballSpeedX;
+		var prevBallY = ballY - ballSpeedY;
+		var prevTileCol = Math.floor(prevBallX / BRICK_W);
+		var prevTileRow = Math.floor(prevBallY / BRICK_H);
+
+		var bothTestsFailed = true;
+		if(prevTileCol != tileCol) {
+			var adjacentBrickIndex = brickTileToIndex(prevTileCol, tileRow);
+			if(brickGrid[adjacentBrickIndex] != 1) {
+				ballSpeedX *= -1;
+				bothTestsFailed = false;
+			}
+		}
+		if(prevTileRow != tileRow){
+			var adjacentBrickIndex = brickTileToIndex(tileCol, prevTileRow);
+			if(brickGrid[adjacentBrickIndex] != 1){	
+				ballSpeedY *= -1;
+				bothTestsFailed = false;
+			}
+		}
+		if(bothTestsFailed){ ballSpeedX *= -1; ballSpeedY *= -1; }
+		brickGrid[brickIndex] = 0;
+		brickCount--;
+	}	
+
+	if(brickCount == 0){ resetBricks(); }
+}
+window.onload = function(){
+	canvas = document.getElementById('gameCanvas');
+	canvasContext = canvas.getContext('2d');
+	var framesPerSecond = 60;
+	setInterval(function() { 
+		drawEverything();
+		moveEverything();
+		removeBrickAtPixelCoord(ballX,ballY);
+}, 1000/framesPerSecond);
+	
+	resetBricks();
+	canvas.addEventListener('mousemove', function(evt) {
+						var mousePos = calculateMousePos(evt);
+						bouncer = mousePos.x-(100/2);
+						});
+}
+function ballReset(){
+	ballX = canvas.width /2;
+	ballY = canvas.height /2;
+	ballSpeedX = 5;
+	ballSpeedY = 5;
+}
+function moveEverything(){
+	ballX += ballSpeedX;
+	ballY += ballSpeedY;
+ 	console.log("ball moved");
+
+	if(ballX < 0){ 
+		ballSpeedX = -ballSpeedX; 
+	}
+	if(ballX > canvas.width){ ballSpeedX = -ballSpeedX; }
+	if(ballY < 0){ ballSpeedY = -ballSpeedY; }
+	if(ballY > bouncerY){ 
+		if(ballX > bouncer && ballX < bouncer+100) {
+			ballSpeedY = -ballSpeedY;
+			if(ballX > bouncer && ballX < bouncer+30){ ballSpeedX = ballSpeedX + ballSpeedX*0.25; ballSpeedX = -ballSpeedX; }
+			else if(ballX > bouncer+70 && ballX < bouncer+100){ ballSpeedX = ballSpeedX - ballSpeedX*0.25; }
+			else {}
+		}	
+		else{  }
+	}
+	if(ballY > canvas.height){ 
+		ballReset();
+		resetBricks();
+	}
+
+}
+function drawEverything() {
+	canvasContext.fillStyle = 'black';
+	canvasContext.fillRect(0,0,canvas.width, canvas.height);
+	ball(ballX,ballY, 8, 'white');
+	drawBouncer();
+	drawBricks();
+}
+
+function ball(centerX,centerY,radius, drawColor){
+	canvasContext.fillStyle = drawColor;
+	canvasContext.beginPath();
+	canvasContext.arc(centerX, centerY, radius, 0, Math.PI*2,true);
+	canvasContext.fill();
+}
+
+function drawBouncer(){
+	colorRect(bouncer, bouncerY, 100, 10, 'white'); 
+}
+function colorRect(leftX, topY, width, height, drawColor){
+	canvasContext.fillStyle = drawColor;
+	canvasContext.fillRect(leftX, topY, width, height);
+}
+function drawBricks(){
+	for(var i = 1; i < BRICK_COLS -1; i++){
+		for(var p = 2; p < BRICK_ROWS; p++){
+			if( isBrickAtTileCoord(i,p)){
+				var brickLeftEdgeX = i * BRICK_W;
+				var brickTopEdgeY = p * BRICK_H;
+				colorRect(brickLeftEdgeX, brickTopEdgeY, BRICK_W - BRICK_GAP, BRICK_H - BRICK_GAP, 'blue');	
+			}
+		}
+	}
+		
+}
+
+
+</script>
+
+</html>
