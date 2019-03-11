@@ -199,7 +199,7 @@ int main()
 		game = checkWin(gameBoard, randomBoard);
 		if (game == false) {
 			cout << "*************     *************" << endl;
-			cout << "     ********solved********   " << endl;
+			cout << "    *******game over*******   " << endl;
 			cout << "**************     ************" << endl;
 			
 			cout << "Continue?(y/n): ";
