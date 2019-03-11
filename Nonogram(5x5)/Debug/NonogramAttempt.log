@@ -1,0 +1,3 @@
+﻿  NonogramAttempt.cpp
+c:\users\hien\source\repos\nonogramattempt\nonogramattempt\nonogramattempt.cpp(41): warning C4101: 'rc': unreferenced local variable
+  NonogramAttempt.vcxproj -> C:\Users\Hien\source\repos\NonogramAttempt\Debug\NonogramAttempt.exe
