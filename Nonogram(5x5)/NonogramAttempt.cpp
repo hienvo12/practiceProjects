@@ -5,6 +5,7 @@
 #include <math.h>
 #include <limits>
 #include <iostream>
+#include <stdlib.h>
 using namespace std;
 
 struct hints {
@@ -16,11 +17,7 @@ void drawBoard(int gboard[], int size, hints ghints) {
 	string ROWS[] = { "r1","r2","r3","r4","r5" };
 	int count = 0;
 
-
 	cout << "__________________________" << endl;
-	cout << "|--------|c1 c2 c3 c4 c5-|" << endl;
-	cout << "|------------------------|" << endl;
-
 	for (int x = 0; x < size; x++) {
 		cout << "|" << ghints.rowhints[x] << "|" << ROWS[x] << "|";
 		for (int y = 0; y < size; y++) {
@@ -30,17 +27,22 @@ void drawBoard(int gboard[], int size, hints ghints) {
 		cout << "|";
 		cout << endl;
 	}
-	cout << "__________________________" << endl;
-	for (int i = 0; i < 5; i++) {
-		cout << "c" << i+1 << " |" << ghints.columnhints[i] << endl;
+
+	cout << "|________________________|" << endl;
+	cout << "|--------|c1 c2 c3 c4 c5-|" << endl;
+	cout << "|------------------------|" << endl;
+	for (int y = 0; y < size; y++) {
+		cout << "         ";
+		cout << "|" << ghints.columnhints[0][y] << "  " << ghints.columnhints[1][y] << "  " << ghints.columnhints[2][y] << "  " << ghints.columnhints[3][y] << "  " << ghints.columnhints[4][y] << "  |" << endl;
 	}
+	
 	return;
 }
 hints getHints(int gboard[], int size) {
 	hints gHints;
 	int rc, count = 0, runs = 0;
 	string hint;
-	
+
 	//row hints
 	for (int x = 0; x < size; x++) {
 		for (int y = 0; y < size; y++) {
@@ -48,11 +50,12 @@ hints getHints(int gboard[], int size) {
 				runs++; int p1 = 1;
 				for (int z = y + 1; z < size; z++) {
 					if (z + p1 - 1 == size) {
-						break; 
+						break;
 					}
 					if (gboard[count + p1] == 1) {
 						runs++; p1++;
-					}else {
+					}
+					else {
 						break;
 					}
 				}
@@ -71,7 +74,7 @@ hints getHints(int gboard[], int size) {
 	}
 	//collumn hints
 	int runc = 0;
-	count = 0; 
+	count = 0;
 	hint = "";
 	for (int y = 0; y < size; y++) {
 		for (int x = 0; x < size; x++) {
@@ -79,7 +82,7 @@ hints getHints(int gboard[], int size) {
 				runc++; int p2 = 1;
 				for (int z = x + 1; z < size; z++) {
 					if ((z) == size) { break; }
-						
+
 					if (gboard[(x * 5) + y + (5 * p2)] == 1) {
 						runc++;
 						p2++;
@@ -102,7 +105,7 @@ hints getHints(int gboard[], int size) {
 	return gHints;
 }
 bool checkBoard(int input1, int input2, int gboard[], int dboard[], hints ghints) {
-	if (gboard[((input1-1) * 5) + input2 -1] == 1) {
+	if (gboard[((input1 - 1) * 5) + input2 - 1] == 1) {
 		return true;
 	}
 
@@ -146,7 +149,7 @@ int main()
 		0,0,0,0,0,
 		0,0,0,0,0
 	};
-	int answerBoard[25] = { 
+	int answerBoard[25] = {
 		1,1,1,1,1,
 		0,0,1,1,1,
 		1,0,0,0,0,
@@ -199,19 +202,24 @@ int main()
 		game = checkWin(gameBoard, randomBoard);
 		if (game == false) {
 			cout << "*************     *************" << endl;
-			cout << "    *******game over*******   " << endl;
+			cout << "     ********solved********   " << endl;
 			cout << "**************     ************" << endl;
-			
+
 			cout << "Continue?(y/n): ";
 			cin >> cont;
 			if (cont == "y") {
+				randomBoard = makenewBoard(5);
+				gameHints = getHints(randomBoard, boardSize);
 				game = true;
+				//reset gameboard
+				for (int number = 0; number < 25; number++) { gameBoard[number] = 0; }
 			}
 		}
 		//clear out the cin for next iteration
 		cin.clear();
 		cin.ignore(numeric_limits<streamsize>::max(), '\n');
 	}
+	
 	return 0;
 }
 
