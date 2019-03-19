@@ -27,7 +27,7 @@ var uppercutOn = false; var spinbackOn = false; var midkickOn = false; var highk
 var uppercutFatality = false; var cpuhitFatality = false;
 var animation = false;
 var PLAYERLIFE = 250; var KEYDOWN = false; var GAMEPAUSE = false;
-var gameTime;
+var gameTime; var roundTime = 90;
 var standTime = Date.now(); var walkTime = Date.now(); var cpuDamageTime = Date.now();
 //
 var cpuX = 550; var CPULIFE = 250;
@@ -36,7 +36,7 @@ var kanoMoving = false; var kanoAttacking = false; var cpu_isHit = false;
 var cpuwalkTime = Date.now(); var kanoAttackTime;
 //
 var pkbt = false;  var pdmgtime;
-var GAMEOVER = true;
+var GAMEOVER = true; var randomStage = Math.random() * 5;
 
 //set up EVENT HANDLERS
 document.addEventListener("keydown", keyDown);
@@ -48,7 +48,7 @@ var fxHitSolid2 = new Sound("sounds/hitsounds/mk3-00280.mp3")
 var fxHitHard = new Sound("sounds/hitsounds/mk3-00245.mp3");
 var fxHitHard2 = new Sound("sounds/hitsounds/mk3-00240.mp3");
 var fxFatality = new Sound("sounds/mk2Fatality.mp3");
-var music = new Audio("sounds/mk2CharacterSelect.mp3");
+var music = new Audio("sounds/MortalKombatMovieThemeSong.mp3");
 music.volume = 0.5;
 
 //
@@ -61,8 +61,10 @@ function keyDown(ev){
 if(ev.keyCode === 13){
   gameStart = true;
   if(GAMEOVER === true)
+    music = new Audio("sounds/MortalKombatMovieThemeSong.mp3");
     gameTime = Date.now();
     GAMEOVER = false;
+    randomStage = Math.random() * 5;
   }
 if(ev.keyCode === 27){ gameStart = false; }
 //MOVEMENT IFS
@@ -166,6 +168,7 @@ function update() {
     setTimeout( (update) => { GAMEPAUSE = false;} , 235);
   }
   else if(gameStart === true){
+
   //get time
   var deltaX = Date.now();
   //tick Music
@@ -175,9 +178,39 @@ function update() {
     music.muted = true;
   }
   //GAME SCREEN
-  screen1 = new Image();
-  screen1.src = "background/mkbackground.jpg";
-  ctx.drawImage(screen1, 0,0, canv.width, canv.height);
+  switch(parseInt(randomStage)){
+    case 0: {
+      screen0 = new Image();
+      screen0.src = "background/mkbackground.jpg";
+      ctx.drawImage(screen0, 0,0, canv.width, canv.height);
+      break;
+    }case 1: {
+      screen1 = new Image();
+      screen1.src = "background/mkbackground2.jpg";
+      ctx.drawImage(screen1, 0,0, canv.width, canv.height);
+      break;
+    }case 2: {
+      screen2 = new Image();
+      screen2.src = "background/mkbackground3.jpg";
+      ctx.drawImage(screen2, 0,0, canv.width, canv.height);
+      break;
+    }case 3: {
+      screen3 = new Image();
+      screen3.src = "background/mkbackground4.png";
+      ctx.drawImage(screen3, 0,0, canv.width, canv.height);
+      break;
+    }case 4: {
+      screen4 = new Image();
+      screen4.src = "background/Portal.png";
+      ctx.drawImage(screen4, 0,0, canv.width, canv.height);
+      break;
+    }case 5: {
+      screen5 = new Image();
+      screen5.src = "background/thepit.gif";
+      ctx.drawImage(screen5, 0,0, canv.width, canv.height);
+      break;
+    }default: {}
+  }
 
   //CPU stuff
   {
@@ -236,6 +269,9 @@ function update() {
       playerKnockBack = true;
       PLAYERLIFE -= 1;
       fxHitLight.play();
+    }else{
+      PLAYERLIFE -= 0.05;
+      playerX -= .5;
     }
   }else {
     playerKnockBack = false;
@@ -520,6 +556,15 @@ function update() {
 
 //
 var roundTimer = ((deltaX - gameTime)/1000).toFixed(2);
+if(roundTimer > 60){
+  ctx.fillStyle = "White";
+  ctx.font = "100px Verdana";
+  ctx.fillText("Draw", 220, 200);
+  resetGame();
+  roundTimer = 0;
+  gameTime = Date.now();
+}
+
 //UI SCREEN
 if(CPULIFE < .01){
   ctx.fillStyle = "White";
@@ -527,6 +572,7 @@ if(CPULIFE < .01){
   ctx.fillText("Player 1 Wins", 220, 330);
   MUSIC_ON = false;
   //Start new round
+  gameTime = Date.now();
   rounds += 1;
   prounds += 1;
   if(prounds < 2){
@@ -554,6 +600,8 @@ if(CPULIFE < .01){
   ctx.font = "100px Verdana";
   ctx.fillText("Player 2 Wins", 220, 330);
   MUSIC_ON = false;
+  //Start new round
+  gameTime = Date.now();
   rounds += 1;
   crounds += 1;
   if(prounds < 2){
@@ -1445,7 +1493,7 @@ function playerBlocking(num){
 
   pblock2 = new Image();
   pblock2.src = "subzero/left/blocking/2.png";
-  ctx.drawImage(pblock2, playerX, canv.height-FLOOR, WEIGHT, HEIGHT);
+  ctx.drawImage(pblock2, playerX, canv.height-FLOOR+7, WEIGHT*.95, HEIGHT*.95);
 }
 //Player cpuDamage
 function playerKnockedBack(num){
