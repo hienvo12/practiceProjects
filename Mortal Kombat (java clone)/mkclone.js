@@ -1,8 +1,6 @@
-// GAME IS STILL GLITCHY AND MECHANICS AND QUITE BUGGY
 //implemented with boolean variables to test for conditions,
 //does not go much further than nested if-else statements and switch statements for animations
 //Animates based on setInterval function call to the main update() function and all time variables called inside update() are based on the first setInterval function call
-
 
 //BOOLEANS
 var canv = document.getElementById("gameCanvas");
@@ -30,14 +28,14 @@ var PLAYERLIFE = 250; var KEYDOWN = false; var GAMEPAUSE = false;
 var gameTime; var roundTime = 90;
 var standTime = Date.now(); var walkTime = Date.now(); var cpuDamageTime = Date.now();
 //
-var cpuX = 550; var CPULIFE = 250;
-var cpuhitU = false; var cpuhitKnockBack = false; var cpuhitKnockBack1 = false; var cputhitKnockBack2 = false;
+var cpuX = 2650; var CPULIFE = 250;
+var cpuhitU = false; var cpuhitKnockBack = false; var cpuhitKnockBack1 = false; var cputhitKnockBack2 = false; var cpuhitUP = false;;
 var kanoMoving = false; var kanoAttacking = false; var cpu_isHit = false;
 var cpuwalkTime = Date.now(); var kanoAttackTime;
 //
 var pkbt = false;  var pdmgtime;
 var GAMEOVER = true; var randomStage = Math.random() * 5;
-
+var gameStarted = 0;
 //set up EVENT HANDLERS
 document.addEventListener("keydown", keyDown);
 document.addEventListener("keyup", keyUp);
@@ -49,22 +47,40 @@ var fxHitHard = new Sound("sounds/hitsounds/mk3-00245.mp3");
 var fxHitHard2 = new Sound("sounds/hitsounds/mk3-00240.mp3");
 var fxFatality = new Sound("sounds/mk2Fatality.mp3");
 var music = new Audio("sounds/MortalKombatMovieThemeSong.mp3");
-music.volume = 0.5;
-
+music.volume = 0.85;
+var intromusic = new Audio("sounds/sf2Opening.mp3");
+music.volume = 0.75;
+//
+var newgif = true;
+var gif1 = document.createElement("img");
+gif1.style.width = 1100/2+"px";gif1.style.height = 600/2+"px";
+gif1.src = "SF2-Intro.gif";
+var divgeter = document.getElementById('overlay');
+var gif1time; var gif2time;
+var gif2 = document.createElement("img"); gif2.style.width = 1100/2+"px"; gif2.style.height = 600/2+"px";
+gif2.src = "SF2-Introb.gif";
+var removed = false;
+//ctx.fillStyle = "black";
+//ctx.fillRect(0,0, canv.width, canv.height);
 //
 //SET UP GAME LOOP
+console.log(gameStart);
 setInterval(update, 1000 / 60);
 //
 //PLAYER INPUT
 function keyDown(ev){
 //pause/unpase
 if(ev.keyCode === 13){
-  gameStart = true;
-  if(GAMEOVER === true)
+  gameStart = true; gameStarted++;
+  if(GAMEOVER === true){
     music = new Audio("sounds/MortalKombatMovieThemeSong.mp3");
     gameTime = Date.now();
     GAMEOVER = false;
     randomStage = Math.random() * 5;
+  }
+  if(gameStarted === 1){
+    gif1time = Date.now();
+  }
   }
 if(ev.keyCode === 27){ gameStart = false; }
 //MOVEMENT IFS
@@ -162,13 +178,34 @@ function Sound(src, maxStreams = 1, vol = 1.0) {
 }
 
 function update() {
-
+  //
+  var deltaXy = Date.now();
   //pause for knockdowns
   if(GAMEPAUSE === true && gameStart === true){
     setTimeout( (update) => { GAMEPAUSE = false;} , 235);
   }
-  else if(gameStart === true){
-
+  //Game LOOP
+  if(gameStart === true){
+    if(gameStarted < 2){
+      intromusic.play();
+      var getTime = (-(gif1time - deltaXy)/1000).toFixed(2);
+      if(getTime < 7){
+        divgeter.append(gif1);
+        if(getTime > 3.4 && getTime < 3.8)
+          fxHitHard2.play();
+      }
+      else if(getTime > 7){
+        divgeter.insertBefore(gif2, divgeter.firstChild);
+        if(removed === false){
+          divgeter.removeChild(divgeter.lastChild);
+          removed = true;
+        }
+      }
+    }
+  else{
+//ACTUAL GAME LOOP
+  console.log(gameStarted);
+  intromusic.pause();
   //get time
   var deltaX = Date.now();
   //tick Music
@@ -189,7 +226,7 @@ function update() {
       screen1.src = "background/mkbackground2.jpg";
       ctx.drawImage(screen1, 0,0, canv.width, canv.height);
       break;
-    }case 2: {
+    }case 5: {
       screen2 = new Image();
       screen2.src = "background/mkbackground3.jpg";
       ctx.drawImage(screen2, 0,0, canv.width, canv.height);
@@ -204,7 +241,7 @@ function update() {
       screen4.src = "background/Portal.png";
       ctx.drawImage(screen4, 0,0, canv.width, canv.height);
       break;
-    }case 5: {
+    }case 2: {
       screen5 = new Image();
       screen5.src = "background/thepit.gif";
       ctx.drawImage(screen5, 0,0, canv.width, canv.height);
@@ -227,7 +264,7 @@ function update() {
     var ctvar2 = ((deltaX - kanoAttackTime) / 56).toFixed(2);
     if(ctvar2 > 8){ kanoAttackTime = Date.now();}
   //
-    if((cpuX+35) > (playerX+WEIGHT)){//animation for movement
+    if((cpuX+26) > (playerX+WEIGHT)){//animation for movement
       if(cpu_isHit === false && fatalityPlayed === false){
         moveKanoLeft(5, parseInt(ctvar));
         kanoMoving = true;
@@ -295,13 +332,13 @@ function update() {
     animation = true;
     fxHitHard.play(); kanoMoving = false; kanoAttacking = false; cpu_isHit = true;
   }else if(isAttacking === true && inrange5 === true && isUpperCut === true){
-    cpuhitU = true;
+    cpuhitUP = true;
     animation = true;
     fxHitHard2.play(); kanoMoving = false; kanoAttacking = false; cpu_isHit = true;
     if(fatalityPlayed === true){
       console.log("fatality");
       cpuhitFatality = true;
-      cpuhitU = false;
+      cpuhitU = false; cpuhitUP = false;
     }
   }
   else{//Animation for standing still
@@ -509,17 +546,20 @@ function update() {
   }
 
   //cpu animate
+  if(cpuhitUP === true){
+    cpuKnockDown(parseInt(tvar2), 4);
+  }else{}
   if(cpuhitU === true){
-    cpuKnockDown(parseInt(tvar2), 5);//3
+    cpuKnockDown(parseInt(tvar2), 15);//3
   }else{}
   if(cpuhitKnockBack === true){
     cpuKnockBack(parseInt(tvar1), 10);//5
   }else{}
   if(cpuhitKnockBack1 === true){
-    cpuKnockBack(parseInt(tvar1), 7);//2
+    cpuKnockBack(parseInt(tvar1), 8);//2
   }else {}
   if(cputhitKnockBack2 === true){
-    cpuDamage(parseInt(tvar1), 5);//1
+    cpuDamage(parseInt(tvar1), 7);//1
   }
   if(cpuhitFatality === true){
     cpuFatality(parseInt(tvar2));
@@ -565,7 +605,7 @@ if(roundTimer > 60){
   gameTime = Date.now();
 }
 
-//UI SCREEN
+//GAME OVER handler
 if(CPULIFE < .01){
   ctx.fillStyle = "White";
   ctx.font = "100px Verdana";
@@ -615,12 +655,11 @@ if(CPULIFE < .01){
     GAMEOVER = true;
   }
   if(rounds === 1){
-    if(crounds >= 2){ }
+    if(crounds >= 2){ MUSIC_ON = false;}
     else{ gameStart = false; }
     rounds = 0;
   }
-
-}
+  }
 else{
   //player LIFEBAR
   ctx.fillStyle = "green";
@@ -644,11 +683,12 @@ else{
   ctx.fillText(roundTimer, 760/2 + 100 , 55);
 }
 
-
+}
+  }
 }
 }
 
-}
+
 //CPU stuff
 //CPU Collision
 function cpuDamage(sTime, dmgFallBack){
@@ -713,7 +753,11 @@ function cpuKnockDown(sTime, dmgFallBack){
       cdd0 = new Image();
       cdd0.src = "kano/right/knock-down/0.png";
       ctx.drawImage(cdd0, cpuX ,canv.height-FLOOR, WEIGHT, HEIGHT);
-      CPULIFE -= 5;
+      if(cpuhitU === true && cpuhitUP === false)
+        CPULIFE -= 23;
+      else {
+        CPULIFE -= 5.5;
+      }
       break;
     }case 1: {
       cdd1 = new Image();
@@ -743,7 +787,7 @@ function cpuKnockDown(sTime, dmgFallBack){
     }case 6: {
       cdd6 = new Image();
       cdd6.src = "kano/right/knock-down/6.png";
-      ctx.drawImage(cdd6, cpuX ,canv.height-FLOOR+(HEIGHT/2), WEIGHT*1.5, HEIGHT/1.75);GAMEPAUSE = true; cpu_isHit = false;
+      ctx.drawImage(cdd6, cpuX ,canv.height-FLOOR+(HEIGHT/2), WEIGHT*1.5, HEIGHT/1.75);GAMEPAUSE = true; cpu_isHit = false; cpuhitUP = false;
       break;
     }case 7: {
       cdd7 = new Image();
@@ -1529,6 +1573,7 @@ function resetGame(){
   PLAYERLIFE = 250; playerX = 50; CPULIFE = 250; cpuX = 550;
   //misc
   cpuhitU = false; cpuhitKnockBack = false; cpuhitKnockBack1 = false; cputhitKnockBack2 = false;
-  kanoMoving = false; kanoAttacking = false; cpu_isHit = false;
+  kanoMoving = false; kanoAttacking = false; cpu_isHit = false; cpuhitUP = false;
   MUSIC_ON = true;
 }
+
