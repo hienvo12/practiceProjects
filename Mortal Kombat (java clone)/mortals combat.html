@@ -1,14 +1,44 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>MORTAL KOMBAT</title>
-  
+    <title>FIGHTER</title>
+    <style>
+      .cssgrid{
+        display: grid;
+        grid-template-columns: 76.7% 23.3%;
+
+      }
+      #overlay{
+        position: absolute;
+        z-index: -1;
+        left: 300px;
+        top: 200px;
+      }
+    </style>
 </head>
 <body>
+  <div id="overlay">
 
-  <div>
-    <canvas id="gameCanvas" width="1100" height="600"></cavas>
-
+  </div>
+  <div class="cssgrid">
+    <div>
+     <canvas id="gameCanvas" width="1100" height="600"></cavas>
+    </div>
+    <div style="border:1px solid black">
+      <h2> Game Key </h2> <br/>
+      <p> Pause: Esc, Start/Unpause: Enter </p>
+      <p> Controls: a,s,d for direction </p>
+      <p> Shift for sprinting, side-step backwards </p>
+      <p>Attacks: </p>
+	<ul>
+	<li>j (punch)</li>
+	<li>k (high-kick)</li>
+	<li>n (mid-kick)</li>
+	<li>m (spin-kick)</li>
+	<li>l (block)</li>
+	</ul>
+     <p>Fatality:(do an uppercut) </p>
+    </div>
   </div>
 
   <script src="./src/mkclone.js"></script>
