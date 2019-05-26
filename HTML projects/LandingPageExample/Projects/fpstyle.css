@@ -1,0 +1,32 @@
+.container {
+}
+.box2{
+  position: absolute;
+  z-index: -1;
+}
+.box {
+  color: black;
+}
+
+.container3 {
+  display: grid;
+  grid-template-columns: 1fr 2fr ;
+  grid-column-gap: 1em;
+  grid-row-gap: 1em;
+  grid-auto-rows: minmax(10px, auto);
+  color: black;
+}
+.container3 > div > p{
+  background-color: lightgray;
+  padding: 1em;
+  font-family: Copperplate,"Copperplate Gothic Light",fantasy;
+  font-weight: bolder;
+}
+.div1 {
+  background-color: #fff;
+  font-family: Copperplate,"Copperplate Gothic Light",fantasy;
+  font-weight: bold;
+}
+.back{
+  text-align: center;
+}
