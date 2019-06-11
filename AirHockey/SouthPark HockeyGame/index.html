@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>South Park Air Hockey</title>
+  <style>
+
+  body {
+    background-color: gray;
+    text-align: center;
+    font-family: Ubuntu Mono;
+  }
+  .cssgrid {
+    display: grid;
+    grid-template-columns: 50% 50%;
+  }
+  .screendiv {
+    margin-top: 100px;
+    margin-left: 50px;
+  }
+  #myCanvas {
+    margin-top: -20px;
+  }
+  .bground {
+    z-index: -1;
+  }
+  section.footer {
+    color: black;
+    font-family: Ubuntu Mono;
+    font-style: normal;
+    font-size: small;
+  }
+  #disclaimer {
+  	font-size: 74%;
+  	color: gray;
+  }
+
+  </style>
+</head>
+<body style="text-align: center">
+  <div class="cssgrid">
+  <div class="bground">
+    <img src="southpark.jpeg">
+  </div>
+  <div class="screendiv">
+    <canvas id="myCanvas" width="450" height="600" style="border:1px solid black;"></canvas>
+  </div>
+  </div>
+  <script src="main.js"></script>
+</body>
+</html>
