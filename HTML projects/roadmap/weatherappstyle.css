@@ -1,0 +1,21 @@
+.headerblock {
+  background-color: lightblue;
+  height: 100%;
+}
+.headerH2 {
+  text-align: center;
+  color: black;
+
+}
+.row1{
+  margin-top: 10px;
+  text-align: center;
+}
+#rowDiv {
+   position: absolute;
+   left: 42.5%;
+ }
+
+.show {
+  margin-top: 50px;
+}
